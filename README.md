@@ -34,7 +34,6 @@ Roadmap:
 * Allow Enum generation by convention or configuration.
 * Allow SQL descriptions to be generated as description attributes or comments.
 * Allow multiple Schemas, represented by diferent namespaces.
-* Configurable generation of implement.
 * Eventually allow Stored Procedure generation...
 * Support for Postgres, Sql Server Compact, MySQL and others.
 
