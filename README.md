@@ -15,10 +15,10 @@ I'm still trying to refine some ideas and major changes will probably happen.
 Features:
 
 * Pluralization of generated identifiers for properties and collections, by providing an IPluralizationService interface, much like EF 6 Contrib. Default is English.
-* Camel case, wich will also remove invalid characters from generated identifiers.
+* Camel case, which will also remove invalid characters from generated identifiers.
 * Default values are automatically generated in the constructor no matter if the columns is required or not.
-* Table filtering by providing a white list and a black list.
-* Global name overrides by convention. Ex: From="dbo.tbl_Person.Person_Name" To="Name" to rename column or From="dbo.tbl_Person" To="Person"
+* Table filtering provided by a white list and a black list. (May allow regex expression in the future.)
+* Global name overrides by convention. Example: From="dbo.tbl_Person.Person_Name" To="Name" to rename column or From="dbo.tbl_Person" To="Person"
 * Many to Many relations are properly named. It seems nothing in the world does this... don't really know why.
 * Computed columns are generated as read only. (No setters.)
 * Supports Spatial.DbGeometry and Spatial.DbGeography.
@@ -32,8 +32,8 @@ Roadmap:
 * Default values created in constructor initialization need to be more robust. Some edge cases must be implemented regarding invalid values.
 * Allow Views generation.
 * Allow Enum generation by convention or configuration.
-* Allow Sql descriptions to be generated as description attributes or comments.
-* Allow multiple Schemas.
+* Allow SQL descriptions to be generated as description attributes or comments.
+* Allow multiple Schemas, represented by diferent namespaces.
 * Configurable generation of implement.
 * Eventually allow Stored Procedure generation...
 * Support for Postgres, Sql Server Compact, MySQL and others.
