@@ -1,0 +1,66 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{986E8B0B-5BFC-4C8C-8BC3-C4DE40A0F341}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Raging.Data.ReverseEngineering.Infrastructure</RootNamespace>
+    <AssemblyName>Raging.Data.ReverseEngineering.Infrastructure</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.Entity.Design" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Metadata\IdentifierGenerationServiceFactory.cs" />
+    <Compile Include="Pluralization\EnglishPluralizationService.cs" />
+    <Compile Include="Metadata\IIdentifierGenerationService.cs" />
+    <Compile Include="Metadata\IdentifierGenerationService.cs" />
+    <Compile Include="Pluralization\IPluralizationService.cs" />
+    <Compile Include="Metadata\IIIdentifierGenerationServiceFactory.cs" />
+    <Compile Include="Pluralization\NounForms.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Raging.Data.ReverseEngineering.Configuration\Raging.Data.ReverseEngineering.Configuration.csproj">
+      <Project>{DA417A94-32E2-4501-A5D6-0EBE38CA8D51}</Project>
+      <Name>Raging.Data.ReverseEngineering.Configuration</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Raging.Toolbox\Raging.Toolbox.csproj">
+      <Project>{F44F456E-DEA7-48FA-88EB-DA317D5B964B}</Project>
+      <Name>Raging.Toolbox</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

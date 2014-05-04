@@ -1,0 +1,105 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{7EF6E9D0-6856-4855-B585-B8349757291C}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Raging.Data.ReverseEngineering.EntityFramework.Tests</RootNamespace>
+    <AssemblyName>Raging.Data.ReverseEngineering.EntityFramework.Tests</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Autofac">
+      <HintPath>..\packages\Autofac.3.3.1\lib\net40\Autofac.dll</HintPath>
+    </Reference>
+    <Reference Include="Autofac.Extras.FakeItEasy">
+      <HintPath>..\packages\Autofac.Extras.FakeItEasy.3.0.2\lib\net40\Autofac.Extras.FakeItEasy.dll</HintPath>
+    </Reference>
+    <Reference Include="FakeItEasy">
+      <HintPath>..\packages\FakeItEasy.1.18.0\lib\net40\FakeItEasy.dll</HintPath>
+    </Reference>
+    <Reference Include="FluentAssertions">
+      <HintPath>..\packages\FluentAssertions.3.0.90\lib\net45\FluentAssertions.dll</HintPath>
+    </Reference>
+    <Reference Include="FluentAssertions.Core">
+      <HintPath>..\packages\FluentAssertions.3.0.90\lib\net45\FluentAssertions.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.framework">
+      <HintPath>..\packages\NUnit.2.6.3\lib\nunit.framework.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="DomainModelProviderIntegrationTests.cs" />
+    <Compile Include="EntityInfoAdapterTests.cs" />
+    <Compile Include="NavigationPropertyInfoAdapterTests.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PropertyInfoAdapterTests.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Raging.Data.ReverseEngineering.Configuration\Raging.Data.ReverseEngineering.Configuration.csproj">
+      <Project>{DA417A94-32E2-4501-A5D6-0EBE38CA8D51}</Project>
+      <Name>Raging.Data.ReverseEngineering.Configuration</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Raging.Data.ReverseEngineering.EntityFramework\Raging.Data.ReverseEngineering.EntityFramework.csproj">
+      <Project>{F8B72C61-2961-403F-8A53-5DDE2D98BD81}</Project>
+      <Name>Raging.Data.ReverseEngineering.EntityFramework</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Raging.Data.ReverseEngineering.Infrastructure\Raging.Data.ReverseEngineering.Infrastructure.csproj">
+      <Project>{986E8B0B-5BFC-4C8C-8BC3-C4DE40A0F341}</Project>
+      <Name>Raging.Data.ReverseEngineering.Infrastructure</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Raging.Data.ReverseEngineering\Raging.Data.ReverseEngineering.csproj">
+      <Project>{341D269A-B594-4347-B0C3-59509B9C1939}</Project>
+      <Name>Raging.Data.ReverseEngineering</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Raging.Data.Schema.SqlServer\Raging.Data.Schema.SqlServer.csproj">
+      <Project>{4FAA76C1-54BE-4BD6-8BF7-3DB6EF51A252}</Project>
+      <Name>Raging.Data.Schema.SqlServer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Raging.Data.Schema\Raging.Data.Schema.csproj">
+      <Project>{AABD4BF5-D2CF-4220-AC60-4DED5C34E286}</Project>
+      <Name>Raging.Data.Schema</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Raging.Toolbox.Testing.NUnit.FakeItEasy\Raging.Toolbox.Testing.NUnit.FakeItEasy.csproj">
+      <Project>{FC4768AA-B940-4363-A0B2-2A7033B40CA7}</Project>
+      <Name>Raging.Toolbox.Testing.NUnit.FakeItEasy</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

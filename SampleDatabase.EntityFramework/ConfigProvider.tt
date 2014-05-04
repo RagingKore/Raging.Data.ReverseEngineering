@@ -1,0 +1,57 @@
+﻿<#@ template debug="true" hostspecific="true" language="C#" #>
+<#@ Assembly Name="EnvDTE" #>
+<#@ Assembly Name="System.Configuration.dll" #>
+<#@ import namespace="System.Configuration" #> 
+<#@ import namespace="System.Text.RegularExpressions" #> 
+
+<#@ IntelliSenseLanguage processor="tangibleT4Editor" language="C#" #>
+<#+ 
+    string GetConnectionString()
+    {
+        var host = (IServiceProvider)Host;
+        var env = (EnvDTE.DTE)host.GetService(typeof(EnvDTE.DTE));
+        var project = (EnvDTE.Project)((Array)env.ActiveSolutionProjects).GetValue(0);
+        var configFilePath = FindConfigFile(project);
+
+        if (configFilePath == null)
+            return null;
+
+        var configFile = new ExeConfigurationFileMap();
+        configFile.ExeConfigFilename = configFilePath;
+        var config = ConfigurationManager.OpenMappedExeConfiguration(
+            configFile, ConfigurationUserLevel.None);
+
+        var configManager = project.ConfigurationManager;
+        var configName = configManager.ActiveConfiguration.ConfigurationName;
+
+        string connectionName = string.Empty;
+
+        if (configName == "Debug")
+            connectionName = "devString";
+        else if (configName == "Release")
+            connectionName = "productionString";
+
+        if (string.IsNullOrEmpty(connectionName))
+            return null;
+
+        string connectionString = string.Empty;
+
+        foreach (ConnectionStringSettings connection in config.ConnectionStrings.ConnectionStrings)
+        {
+            if (connection.Name == connectionName)
+                connectionString = connection.ConnectionString;
+        }
+
+        return connectionString;
+    }
+
+    string FindConfigFile(EnvDTE.Project project)
+    {
+        foreach (EnvDTE.ProjectItem item in project.ProjectItems)
+        {
+            if (Regex.IsMatch(item.Name, "(app|web).config", RegexOptions.IgnoreCase))
+                return item.get_FileNames(0);
+        }
+        return null;
+    }
+#>

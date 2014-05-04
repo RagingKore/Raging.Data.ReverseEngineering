@@ -1,0 +1,252 @@
+﻿<#@ template debug="true" hostspecific="true" language="C#" #>
+<#@ assembly name="EnvDTE" #>
+<#@ assembly name="System.Core" #>
+<#@ assembly name="System.Configuration" #>
+<#@ assembly name="System.Data" #>
+<#@ assembly name="$(TargetDir)\Raging.Data.ReverseEngineering.dll" #>
+<#@ assembly name="$(TargetDir)\Raging.Data.ReverseEngineering.Configuration.dll" #>
+<#@ assembly name="$(TargetDir)\Raging.Data.ReverseEngineering.EntityFramework.dll" #>
+<#@ assembly name="$(TargetDir)\Raging.Data.ReverseEngineering.Infrastructure.dll" #>
+<#@ assembly name="$(TargetDir)\Raging.Data.Schema.dll" #>
+<#@ assembly name="$(TargetDir)\Raging.Data.Schema.SqlServer.dll" #>
+<#@ assembly name="$(TargetDir)\Raging.Toolbox.dll" #>
+<#@ import namespace="Microsoft.VisualStudio.TextTemplating" #>
+<#@ import namespace="Raging.Data.ReverseEngineering.Infrastructure.Metadata" #>
+<#@ import namespace="Raging.Data.ReverseEngineering.Infrastructure.Pluralization" #>
+<#@ import namespace="Raging.Toolbox.Extensions" #>
+<#@ import namespace="Raging.Data.ReverseEngineering" #>
+<#@ import namespace="Raging.Data.ReverseEngineering.Configuration" #>
+<#@ import namespace="Raging.Data.ReverseEngineering.EntityFramework.Adapters" #>
+<#@ import namespace="Raging.Data.ReverseEngineering.EntityFramework.Providers" #>
+<#@ import namespace="Raging.Data.ReverseEngineering.Infrastructure" #>
+<#@ import namespace="Raging.Data.Schema" #>
+<#@ import namespace="Raging.Data.Schema.SqlServer" #>
+<#@ import namespace="Raging.Toolbox" #>
+<#@ import namespace="System.Configuration" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".generated.cs" #>
+
+using System;
+using System.Reflection;
+using System.Collections.Generic;
+using System.Data.Entity;
+using System.Data.Entity.Infrastructure;
+using System.Data.Entity.Spatial;
+using System.Data.Entity.ModelConfiguration;
+using System.Data.Entity.ModelConfiguration.Conventions;
+using System.ComponentModel.DataAnnotations.Schema;
+using <#= Configuration.PocoNamespace #>;
+
+namespace SampleDatabase.EntityFramework
+{
+	public interface IUnitOfWork : IDisposable
+    {
+        void SaveChanges();
+    }
+
+	public partial class DataContext : DbContext
+    {
+        static DataContext()
+        {
+            Database.SetInitializer<DataContext>(null);
+        }
+
+        public DataContext() : base("Name=DataContext") {}
+
+<# 
+
+PushIndent("\t\t"); 
+
+this.Entities.ForEach(info => WriteLine(info.DbSetText)); 
+
+PopIndent(); 
+
+#>
+
+		protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+            modelBuilder.Configurations.AddFromAssembly(Assembly.GetExecutingAssembly());
+<# 
+PushIndent("\t\t\t");
+
+if(!Configuration.Pluralize) 
+	WriteLine("modelBuilder.Conventions.Remove<PluralizingTableNameConvention>();");
+
+PopIndent();
+#>
+		}
+
+	}
+}
+
+namespace <#= Configuration.PocoNamespace #>
+{
+<# 
+foreach (var modelInfo in this.Entities) {
+#>
+    public partial class <#= modelInfo.ModelName #>
+    {
+        public <#= modelInfo.ModelName #>() 
+		{
+<#
+    var initializations = modelInfo.Properties
+		.Select(info => info.ConstructorInitializationText)
+		.Union(modelInfo.NavigationProperties.Select(info => info.ConstructorInitializationText))
+        .Where(text => text.IsNotBlank())
+		.ToList();
+
+    if(initializations.Any())
+    {
+		PushIndent("\t\t\t");
+		initializations.ForEach(WriteLine);
+		PopIndent();
+    } 
+#>		}
+
+<#
+	PushIndent("\t\t");
+
+	WriteLine("//Properties");
+
+	modelInfo.Properties.ForEach(property => WriteLine(property.PropertyText));
+
+	WriteLine(CurrentIndent);
+
+	WriteLine("//Navigation properties");
+
+	modelInfo.NavigationProperties.ForEach(property => WriteLine(property.PropertyText));
+
+	ClearIndent();
+#>
+	}
+
+<# }#>
+}
+
+namespace SampleDatabase.EntityFramework.Models.Mapping
+{
+<# 
+foreach (var modelInfo in this.Entities) {
+#>
+    public class <#= modelInfo.ModelName #>Map : EntityTypeConfiguration<<#= modelInfo.ModelName #>>
+    {
+        public <#= modelInfo.ModelName #>Map()
+        {
+            // Primary Key
+			<#= modelInfo.PrimaryKeyMappingText #>
+
+<# 
+	//Properties
+	var mappings = modelInfo.Properties.Where(info => info.MappingText != null);
+
+	if(mappings.Any())
+	{
+		PushIndent("\t\t\t"); 
+
+		WriteLine("// Properties");
+
+		mappings.ForEach(
+			info =>
+			{
+			    WriteLine(info.MappingText);
+			    WriteLine(String.Empty);
+			});
+			
+		PopIndent(); 
+	}	
+
+	//Relationships
+	var navMappings = modelInfo.NavigationProperties.Where(info => info.MappingText != null);
+
+	if(navMappings.Any())
+	{
+		PushIndent("\t\t\t"); 
+
+		WriteLine("// Relationships");
+				
+		navMappings.ForEach( 
+			info =>
+			{
+			    WriteLine(info.MappingText);
+			    WriteLine(String.Empty);
+			}); 
+				
+		PopIndent();
+	}
+#>
+            // Table & Column Mappings
+<# 
+		PushIndent("\t\t\t"); 
+
+		WriteLine(modelInfo.TableMappingText);
+
+		modelInfo.Properties.ForEach(info => WriteLine(info.ColumnMappingText)); 
+		PopIndent();
+#>
+        }
+    }
+
+<# }#>
+}
+
+<#+
+
+	public string ConnectionString
+	{
+		get 
+		{
+			return "Data Source=.;Initial Catalog=SagaStore;Integrated Security=True;MultipleActiveResultSets=True";
+		}
+	}
+
+	public IReverseEngineeringConfiguration Configuration
+	{
+		get 
+		{
+			var reverseEngineeringConfiguration = new ReverseEngineeringConfiguration
+			{
+			    Pluralize            = true,
+				//TableWhiteListFilter = "dbo.Person",
+			    //TableBlackListFilter = "dbo.RelatedSaga",
+			    PocoNamespace        = "SampleDatabase.EntityFramework.Models",
+			    DataNamespace        = "SampleDatabase.EntityFramework"
+			};
+
+		    return reverseEngineeringConfiguration;
+		}
+	}
+
+    private List<EntityInfo> entities;
+
+	public IEnumerable<EntityInfo> Entities
+	{
+		get 
+		{
+		    if(this.entities == null)
+		    {
+				var schemaReader						 = new SqlServerSchemaReader(ConnectionString);
+				var modelInfoAdapterFactory              = new EntityInfoAdapterFactory();
+				var propertyInfoAdapterFactory           = new PropertyInfoAdapterFactory();
+				var navigationPropertyInfoAdapterFactory = new NavigationPropertyInfoAdapterFactory();
+				var identifierGenerationServiceFactory   = new IdentifierGenerationServiceFactory();
+				var pluralizationService                 = new EnglishPluralizationService();
+
+				var provider = new DomainModelProvider(
+					schemaReader,
+					modelInfoAdapterFactory,
+					propertyInfoAdapterFactory,
+					navigationPropertyInfoAdapterFactory,
+					identifierGenerationServiceFactory,
+					pluralizationService,
+					Configuration);
+
+				this.entities = provider.GetInformation().ToList();
+			}
+
+		    return this.entities;
+		}
+	}
+#>

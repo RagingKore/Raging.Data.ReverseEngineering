@@ -1,0 +1,125 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{0BD2662B-F68E-4421-A5D6-1155BDC96DA3}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>SampleDatabase.EntityFramework</RootNamespace>
+    <AssemblyName>SampleDatabase.EntityFramework</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework">
+      <HintPath>..\packages\EntityFramework.6.1.0\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer">
+      <HintPath>..\packages\EntityFramework.6.1.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.Entity.Design" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AppSettingsWrapper.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>AppSettingsWrapper.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ConfigProvider.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ConfigProvider.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DataContext.generated.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>DataContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="AppSettingsWrapper.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>AppSettingsWrapper.cs</LastGenOutput>
+    </None>
+    <None Include="ConfigProvider.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>ConfigProvider.cs</LastGenOutput>
+    </None>
+    <None Include="DataContext.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>DataContext.generated.cs</LastGenOutput>
+    </None>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Raging.Data.ReverseEngineering.Configuration\Raging.Data.ReverseEngineering.Configuration.csproj">
+      <Project>{da417a94-32e2-4501-a5d6-0ebe38ca8d51}</Project>
+      <Name>Raging.Data.ReverseEngineering.Configuration</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Raging.Data.ReverseEngineering.EntityFramework\Raging.Data.ReverseEngineering.EntityFramework.csproj">
+      <Project>{f8b72c61-2961-403f-8a53-5dde2d98bd81}</Project>
+      <Name>Raging.Data.ReverseEngineering.EntityFramework</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Raging.Data.ReverseEngineering.Infrastructure\Raging.Data.ReverseEngineering.Infrastructure.csproj">
+      <Project>{986e8b0b-5bfc-4c8c-8bc3-c4de40a0f341}</Project>
+      <Name>Raging.Data.ReverseEngineering.Infrastructure</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Raging.Data.ReverseEngineering\Raging.Data.ReverseEngineering.csproj">
+      <Project>{341d269a-b594-4347-b0c3-59509b9c1939}</Project>
+      <Name>Raging.Data.ReverseEngineering</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Raging.Data.Schema.SqlServer\Raging.Data.Schema.SqlServer.csproj">
+      <Project>{4faa76c1-54be-4bd6-8bf7-3db6ef51a252}</Project>
+      <Name>Raging.Data.Schema.SqlServer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Raging.Data.Schema\Raging.Data.Schema.csproj">
+      <Project>{aabd4bf5-d2cf-4220-ac60-4ded5c34e286}</Project>
+      <Name>Raging.Data.Schema</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Raging.Toolbox\Raging.Toolbox.csproj">
+      <Project>{f44f456e-dea7-48fa-88eb-da317d5b964b}</Project>
+      <Name>Raging.Toolbox</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
