@@ -101,7 +101,7 @@ namespace SampleDatabase.EntityFramework.Models
 		{
 			this.PrimarySagas = new List<RelatedSaga>();
 			this.SecondarySagas = new List<RelatedSaga>();
-			this.Sagas = new List<SagaMessage>();
+			this.SagaMessages = new List<SagaMessage>();
 		}
 
 		//Properties
@@ -112,7 +112,7 @@ namespace SampleDatabase.EntityFramework.Models
 		//Navigation properties
 		public virtual ICollection<RelatedSaga> PrimarySagas { get; set; } // RelatedSaga.FK_RelatedSaga_PrimarySaga
 		public virtual ICollection<RelatedSaga> SecondarySagas { get; set; } // RelatedSaga.FK_RelatedSaga_SecondarySaga
-		public virtual ICollection<SagaMessage> Sagas { get; set; } // SagaMessage.FK_SagaMessage_Saga
+		public virtual ICollection<SagaMessage> SagaMessages { get; set; } // SagaMessage.FK_SagaMessage_Saga
 	}
 
     public partial class SagaMessage
@@ -320,7 +320,7 @@ namespace SampleDatabase.EntityFramework.Models.Mapping
 
 			// Relationships
 			this.HasRequired(a => a.Saga)
-				.WithMany(b => b.Sagas)
+				.WithMany(b => b.SagaMessages)
 				.HasForeignKey(c => c.SagaId); // FK_SagaMessage_Saga
 
             // Table & Column Mappings

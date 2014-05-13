@@ -25,77 +25,6 @@ namespace Raging.Data.ReverseEngineering.EntityFramework.Adapters
 
         #region . INavigationPropertyInfoAdapter .
 
-        //public enum Relationships
-        //{
-        //    OneToOne,
-        //    OneToMany,
-        //    ManyToOne,
-        //    ManyToMany,
-        //}
-
-        //public static Relationships CalculateRelationship(Table pkTable, Table fkTable, Column fkCol, Column pkCol)
-        //{
-        //    var foreignKeyTableHasSurrogateKey = (fkTable.PrimaryKeys.Count() == 1);
-        //    var primaryKeyTableHasSurrogateKey = (pkTable.PrimaryKeys.Count() == 1);
-
-        //    // 1:1
-        //    if (fkCol.IsPrimaryKey && pkCol.IsPrimaryKey && foreignKeyTableHasSurrogateKey && primaryKeyTableHasSurrogateKey)
-        //        return Relationships.OneToOne;
-
-        //    // 1:n
-        //    if (fkCol.IsPrimaryKey && !pkCol.IsPrimaryKey && foreignKeyTableHasSurrogateKey)
-        //        return Relationships.OneToMany;
-
-        //    // n:1
-        //    if (!fkCol.IsPrimaryKey && pkCol.IsPrimaryKey && primaryKeyTableHasSurrogateKey)
-        //        return Relationships.ManyToOne;
-
-        //    // n:n
-        //    return Relationships.ManyToMany;
-        //}
-
-        //// HasOptional
-        //// HasRequired
-        //// HasMany
-        //private static string GetHasMethod(Column fkCol, Column pkCol)
-        //{
-        //    if (pkCol.IsPrimaryKey)
-        //        return fkCol.IsNullable ? "Optional" : "Required";
-
-        //    return "Many";
-        //}
-
-        //// WithOptional
-        //// WithRequired
-        //// WithMany
-        //// WithRequiredPrincipal
-        //// WithRequiredDependent
-        //private static string GetWithMethod(Relationships relationship, Column fkCol, string fkPropName, string manyToManyMapping)
-        //{
-        //    switch (relationship)
-        //    {
-        //        case Relationships.OneToOne:
-        //            return string.Format(".WithOptional(b => b.{0})", fkPropName);
-
-        //        case Relationships.OneToMany:
-        //            return string.Format(".WithRequiredDependent(b => b.{0})", fkPropName);
-
-        //        case Relationships.ManyToOne:
-        //            return string.Format(".WithMany(b => b.{0}).HasForeignKey(c => c.{1})", fkPropName, fkCol.PropertyNameHumanCase);
-
-        //        case Relationships.ManyToMany:
-        //            return string.Format(".WithMany(b => b.{0}).HasForeignKey({1})", fkPropName, manyToManyMapping);
-
-        //        default:
-        //            throw new ArgumentOutOfRangeException("relationship");
-        //    }
-        //}
-
-        //private static string GetRelationship(Relationships relationship, Column fkCol, Column pkCol, string pkPropName, string fkPropName, string manyToManyMapping)
-        //{
-        //    return string.Format("Has{0}(a => a.{1}){2}", GetHasMethod(fkCol, pkCol), pkPropName, GetWithMethod(relationship, fkCol, fkPropName, manyToManyMapping));
-        //}
-
         private const string MappingTextTemplate = "this.{0}(a => a.{1})\r\n\t.WithMany(b => b.{2})\r\n\t.HasForeignKey(c => c.{3}); // {4}";
         private const string PropertyTextOneToManyTemplate = "public virtual ICollection<{0}> {1} {{ get; set; }} // {2}.{3}";
         private const string PropertyTextOneToOneTemplate  = "public virtual {0} {1} {{ get; set; }} // {2}";
@@ -106,33 +35,38 @@ namespace Raging.Data.ReverseEngineering.EntityFramework.Adapters
             // 1:n
             if(this.table.FullName == this.foreignKey.ForeignKeyTableFullName)
             {
-                var propertyName = this.foreignKey.ForeignKeyColumn.ToLowerInvariant().EndsWith("id")
-                                       ? this.foreignKey.ForeignKeyColumn.Substring(0, this.foreignKey.ForeignKeyColumn.Length - 2)
-                                       : this.foreignKey.ForeignKeyColumn;
+                if(this.foreignKey.PrimaryKeyColumn == this.foreignKey.ForeignKeyColumn)
+                {
+                    text = MappingTextTemplate
+                        .FormatWith(
+                            table.Columns.Single(column => column.Name == this.foreignKey.ForeignKeyColumn).IsNullable
+                                ? "HasOptional"
+                                : "HasRequired",
+                            this.foreignKey.PrimaryKeyTableName,
+                            this.identifierGenerationService.Generate(
+                                this.foreignKey.ForeignKeyTableName, 
+                                NounForms.Plural,
+                                "{0}.{1}".FormatWith(this.foreignKey.ForeignKeyTableFullName, this.foreignKey.ForeignKeyTableName)),
+                            this.foreignKey.ForeignKeyColumn,
+                            this.foreignKey.ConstraintName);
+                }
+                else
+                {
+                    var propertyName = this.foreignKey.ForeignKeyColumn.ToLowerInvariant().EndsWith("id")
+                        ? this.foreignKey.ForeignKeyColumn.Substring(0, this.foreignKey.ForeignKeyColumn.Length - 2)
+                        : this.foreignKey.ForeignKeyColumn;
 
-                text = MappingTextTemplate
-                    .FormatWith(
-                        table.Columns.Single(column => column.Name == this.foreignKey.ForeignKeyColumn).IsNullable
-                            ? "HasOptional"
-                            : "HasRequired",
-                        propertyName,
-                        this.identifierGenerationService.Generate(propertyName, NounForms.Plural, "{0}.{1}".FormatWith(this.foreignKey.ForeignKeyTableFullName, propertyName)),
-                        this.foreignKey.ForeignKeyColumn,
-                        this.foreignKey.ConstraintName);
+                    text = MappingTextTemplate
+                        .FormatWith(
+                            table.Columns.Single(column => column.Name == this.foreignKey.ForeignKeyColumn).IsNullable
+                                ? "HasOptional"
+                                : "HasRequired",
+                            propertyName,
+                            this.identifierGenerationService.Generate(propertyName, NounForms.Plural, "{0}.{1}".FormatWith(this.foreignKey.ForeignKeyTableFullName, propertyName)),
+                            this.foreignKey.ForeignKeyColumn,
+                            this.foreignKey.ConstraintName); 
+                }
             }
-
-            // n:1
-
-            // n:n
-            //TODO: optionally generate many to many mappings and don't generate the models, or generate both
-            //this.HasMany(t => t.SecondarySagas)
-            //    .WithMany(t => t.PrimarySagas)
-            //    .Map(m =>
-            //    {
-            //        m.ToTable("RelatedSaga");
-            //        m.MapLeftKey("PrimarySagaId");
-            //        m.MapRightKey("SecondarySagaId");
-            //    });
 
             return text;
         }
@@ -145,14 +79,29 @@ namespace Raging.Data.ReverseEngineering.EntityFramework.Adapters
              //one to many
             if(this.table.FullName == this.foreignKey.PrimaryKeyTableFullName)
             {
-                var propertyName = this.foreignKey.ForeignKeyColumn.ToLowerInvariant().EndsWith("id")
-                    ? this.foreignKey.ForeignKeyColumn.Substring(0, this.foreignKey.ForeignKeyColumn.Length - 2)
-                    : this.foreignKey.ForeignKeyColumn;
+                if(this.foreignKey.PrimaryKeyColumn == this.foreignKey.ForeignKeyColumn)
+                {
+                    return template.FormatWith(
+                        this.identifierGenerationService.Generate(
+                            this.foreignKey.ForeignKeyTableName, 
+                            NounForms.Plural, 
+                            "{0}.{1}".FormatWith(this.foreignKey.ForeignKeyTableFullName, this.foreignKey.ForeignKeyTableName)),
+                       this.foreignKey.ForeignKeyTableName);
+                }
+                else
+                {
+                    var propertyName = this.foreignKey.ForeignKeyColumn.ToLowerInvariant().EndsWith("id")
+                        ? this.foreignKey.ForeignKeyColumn.Substring(0, this.foreignKey.ForeignKeyColumn.Length - 2)
+                        : this.foreignKey.ForeignKeyColumn;
 
-                return template.FormatWith(
-                       this.identifierGenerationService.Generate(propertyName, NounForms.Plural, "{0}.{1}".FormatWith(this.foreignKey.ForeignKeyTableFullName, propertyName)),
-                    this.foreignKey.ForeignKeyTableName
-                    );
+                    return template.FormatWith(
+                        this.identifierGenerationService.Generate(
+                            propertyName, 
+                            NounForms.Plural, 
+                            "{0}.{1}".FormatWith(this.foreignKey.ForeignKeyTableFullName, propertyName)),
+                        this.foreignKey.ForeignKeyTableName);
+                }
+               
 
             }
             
@@ -194,13 +143,24 @@ namespace Raging.Data.ReverseEngineering.EntityFramework.Adapters
             //one to many
             if(this.table.FullName == this.foreignKey.PrimaryKeyTableFullName)
             {
-                text = PropertyTextOneToManyTemplate
-                    .FormatWith(
-                        //this.identifierGenerationService.Generate(this.foreignKey.ForeignKeyTableName, NounForms.Singular),
-                        this.identifierGenerationService.Generate(this.foreignKey.ForeignKeyTableName, NounForms.Singular, "{0}.{1}".FormatWith(this.foreignKey.ForeignKeyTableFullName, this.foreignKey.ForeignKeyTableName)),
-                        this.identifierGenerationService.Generate(propertyName, NounForms.Plural, "{0}.{1}".FormatWith(this.foreignKey.ForeignKeyTableFullName, propertyName)),
-                        this.foreignKey.ForeignKeyTableName,
-                        this.foreignKey.ConstraintName);
+                if(this.foreignKey.PrimaryKeyColumn == this.foreignKey.ForeignKeyColumn)
+                {
+                    text = PropertyTextOneToManyTemplate
+                        .FormatWith(
+                            this.identifierGenerationService.Generate(this.foreignKey.ForeignKeyTableName, NounForms.Singular, "{0}.{1}".FormatWith(this.foreignKey.ForeignKeyTableFullName, this.foreignKey.ForeignKeyTableName)),
+                            this.identifierGenerationService.Generate(this.foreignKey.ForeignKeyTableName, NounForms.Plural, "{0}.{1}".FormatWith(this.foreignKey.ForeignKeyTableFullName, this.foreignKey.ForeignKeyTableName)),
+                            this.foreignKey.ForeignKeyTableName,
+                            this.foreignKey.ConstraintName);
+                }
+                else
+                {
+                    text = PropertyTextOneToManyTemplate
+                        .FormatWith(
+                            this.identifierGenerationService.Generate(this.foreignKey.ForeignKeyTableName, NounForms.Singular, "{0}.{1}".FormatWith(this.foreignKey.ForeignKeyTableFullName, this.foreignKey.ForeignKeyTableName)),
+                            this.identifierGenerationService.Generate(propertyName, NounForms.Plural, "{0}.{1}".FormatWith(this.foreignKey.ForeignKeyTableFullName, propertyName)),
+                            this.foreignKey.ForeignKeyTableName,
+                            this.foreignKey.ConstraintName);
+                }
             }
 
             //one to one

@@ -29,7 +29,7 @@ namespace Raging.Data.ReverseEngineering.EntityFramework.Tests
             reverseEngineeringConfiguration.Pluralize = true;
             reverseEngineeringConfiguration.UsePascalCase = true;
 
-            //reverseEngineeringConfiguration.TableWhiteListFilter = "dbo.Saga;";
+            reverseEngineeringConfiguration.TableWhiteListFilter = "dbo.Saga;";
 
             //reverseEngineeringConfiguration.TableWhiteListFilter = "dbo.Person;dbo.SagaMessage";
             //reverseEngineeringConfiguration.TableBlackListFilter = "dbo.RelatedSaga;dbo.Person";

@@ -209,7 +209,7 @@ foreach (var modelInfo in this.Entities) {
 			var reverseEngineeringConfiguration = new ReverseEngineeringConfiguration
 			{
 			    Pluralize            = true,
-				//TableWhiteListFilter = "dbo.Person",
+				//TableWhiteListFilter = "dbo.Saga",
 			    //TableBlackListFilter = "dbo.RelatedSaga",
 			    PocoNamespace        = "SampleDatabase.EntityFramework.Models",
 			    DataNamespace        = "SampleDatabase.EntityFramework"

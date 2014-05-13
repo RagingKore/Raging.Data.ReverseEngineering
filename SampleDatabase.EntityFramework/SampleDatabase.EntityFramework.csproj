@@ -48,16 +48,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AppSettingsWrapper.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>AppSettingsWrapper.tt</DependentUpon>
-    </Compile>
-    <Compile Include="ConfigProvider.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>ConfigProvider.tt</DependentUpon>
-    </Compile>
     <Compile Include="DataContext.generated.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -67,14 +57,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="AppSettingsWrapper.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>AppSettingsWrapper.cs</LastGenOutput>
-    </None>
-    <None Include="ConfigProvider.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>ConfigProvider.cs</LastGenOutput>
-    </None>
     <None Include="DataContext.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>DataContext.generated.cs</LastGenOutput>
